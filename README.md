@@ -100,7 +100,9 @@ http://127.0.0.1:5000
 
 ## 📸 Preview
 
-Add screenshots here after deploying the project.
+## 📸 Preview
+
+![Weather Dashboard](https://github.com/royooabhi/Weather-Dashboard/blob/333aa33d9104a893b4c0e1a45d1a82bf8c2b7fe8/weather%20dashboard.jpg)
 
 ## 📜 License
 
