@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather Dashboard</title>
+<style>
+  :root {
+    --bg1: #0f2027;
+    --bg2: #203a43;
+    --bg3: #2c5364;
+    --accent: #ffd166;
+    --panel: rgba(255, 255, 255, 0.06);
+    --panel-border: rgba(255, 255, 255, 0.12);
+    --text: #f5f7fa;
+    --muted: #9fb3c8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
+    color: var(--text);
+  }
+  .layout {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 760px) {
+    .layout { grid-template-columns: 320px 1fr; align-items: start; }
+  }
+  header.top {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  header.top h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  #search-form {
+    display: flex;
+    gap: 8px;
+  }
+  #city-input {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--panel-border);
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+    font-size: 15px;
+    outline: none;
+    min-width: 180px;
+  }
+  #city-input::placeholder { color: var(--muted); }
+  #search-form button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #20242a;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  #search-form button:hover { filter: brightness(1.05); }
+  #status {
+    grid-column: 1 / -1;
+    min-height: 18px;
+    color: var(--muted);
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .hidden { display: none !important; }
+
+  /* Left column: current conditions */
+  #current-card #location-name {
+    margin: 0 0 4px;
+    font-size: 18px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .current-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 10px 0 4px;
+  }
+  .icon-big { font-size: 54px; line-height: 1; }
+  .temp-big { font-size: 48px; font-weight: 700; }
+  #current-desc {
+    color: var(--accent);
+    font-weight: 600;
+    margin: 0 0 18px;
+  }
+  .details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid var(--panel-border);
+    padding-top: 16px;
+  }
+  .details div {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+  .details span { color: var(--muted); }
+  .details strong { font-weight: 600; }
+
+  /* Right column: forecast */
+  .forecast-panel h3 {
+    margin: 0 0 16px;
+    font-size: 15px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .forecast {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .forecast-day {
+    display: grid;
+    grid-template-columns: 60px 36px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .forecast-day .day-name { font-weight: 600; }
+  .forecast-day .day-icon { font-size: 22px; text-align: center; }
+  .forecast-day .day-desc { color: var(--muted); font-size: 13px; }
+  .forecast-day .day-temps { font-weight: 600; white-space: nowrap; }
+  .forecast-day .day-temps .lo { color: var(--muted); font-weight: 400; }
+</style>
+</head>
+<body>
+  <div class="layout">
+    <header class="top">
+      <h1>🌤️ Weather Dashboard</h1>
+      <form id="search-form">
+        <input type="text" id="city-input" placeholder="Enter a city..." autocomplete="off" />
+        <button type="submit">Search</button>
+      </form>
+    </header>
+
+    <div id="status"></div>
+
+    <div id="current-card" class="panel hidden">
+      <h2 id="location-name"></h2>
+      <div class="current-main">
+        <span id="current-icon" class="icon-big"></span>
+        <span id="current-temp" class="temp-big"></span>
+      </div>
+      <p id="current-desc"></p>
+      <div class="details">
+        <div><span>Feels like</span><strong id="feels-like"></strong></div>
+        <div><span>Humidity</span><strong id="humidity"></strong></div>
+        <div><span>Wind</span><strong id="wind"></strong></div>
+      </div>
+    </div>
+
+    <div class="panel forecast-panel">
+      <h3>5-Day Forecast</h3>
+      <div id="forecast" class="forecast"></div>
+    </div>
+  </div>
+
+<script>
+const form = document.getElementById('search-form');
+const input = document.getElementById('city-input');
+const statusEl = document.getElementById('status');
+const currentCard = document.getElementById('current-card');
+const forecastEl = document.getElementById('forecast');
+
+const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const city = input.value.trim();
+  if (!city) return;
+  await fetchWeather(city);
+});
+
+async function fetchWeather(city) {
+  statusEl.textContent = 'Loading...';
+  currentCard.classList.add('hidden');
+
+  try {
+    const res = await fetch(`/api/weather?city=${encodeURIComponent(city)}`);
+    const data = await res.json();
+
+    if (!res.ok) {
+      statusEl.textContent = data.error || 'Something went wrong.';
+      return;
+    }
+
+    statusEl.textContent = '';
+    renderCurrent(data);
+    renderForecast(data.forecast);
+  } catch (err) {
+    statusEl.textContent = 'Network error. Please try again.';
+  }
+}
+
+function renderCurrent(data) {
+  document.getElementById('location-name').textContent = data.location;
+  document.getElementById('current-icon').textContent = data.current.icon;
+  document.getElementById('current-temp').textContent = `${Math.round(data.current.temperature)}°C`;
+  document.getElementById('current-desc').textContent = data.current.description;
+  document.getElementById('feels-like').textContent = `${Math.round(data.current.feels_like)}°C`;
+  document.getElementById('humidity').textContent = `${data.current.humidity}%`;
+  document.getElementById('wind').textContent = `${data.current.wind_speed} km/h`;
+  currentCard.classList.remove('hidden');
+}
+
+function renderForecast(forecast) {
+  forecastEl.innerHTML = '';
+  forecast.forEach((day) => {
+    const date = new Date(day.date);
+    const dayName = DAY_NAMES[date.getDay()];
+
+    const row = document.createElement('div');
+    row.className = 'forecast-day';
+    row.innerHTML = `
+      <span class="day-name">${dayName}</span>
+      <span class="day-icon">${day.icon}</span>
+      <span class="day-desc">${day.description}</span>
+      <span class="day-temps">${Math.round(day.max)}° <span class="lo">/ ${Math.round(day.min)}°</span></span>
+    `;
+    forecastEl.appendChild(row);
+  });
+}
+
+// Load a default city on page load
+fetchWeather('London');
+</script>
+</body>
+</html>
