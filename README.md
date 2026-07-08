@@ -1,4 +1,7 @@
+<div align="center">
+
 # 🌦️ Weather Dashboard
+</div>
 
 A simple and responsive weather dashboard built with **Python (Flask)**, **HTML**, **CSS**, and **JavaScript**. Search any city to get real-time weather information and a 5-day forecast using the free Open-Meteo API.
 > Note: For simplicity, all frontend code (HTML, CSS, and JavaScript) is contained within a single `index.html` file.
