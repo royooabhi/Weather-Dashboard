@@ -102,10 +102,19 @@ http://127.0.0.1:5000
 
 ![Weather Dashboard](https://github.com/royooabhi/Weather-Dashboard/blob/333aa33d9104a893b4c0e1a45d1a82bf8c2b7fe8/weather%20dashboard.jpg)
 
-## 📜 License
+## 📜 License !!
 
-This project is licensed under the MIT License.
+This project is licensed under the **MIT License**.
 
-## 👨‍💻 Author
+You are free to use, modify, and share this code — just give proper credit 💖  
+See the [LICENSE](LICENSE) file for full license text.
 
-Developed by Abhijeet
+## ✨ Overview
+
+A modern weather dashboard built to demonstrate API integration, responsive design, and interactive frontend development.
+
+If you found this project valuable, consider giving it a ⭐.
+
+Pull requests are always welcome 🙌
+
+
